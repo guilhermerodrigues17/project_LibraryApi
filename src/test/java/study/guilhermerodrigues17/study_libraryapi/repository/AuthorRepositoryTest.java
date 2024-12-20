@@ -48,4 +48,9 @@ public class AuthorRepositoryTest {
         List<Author> authorList = repository.findAll();
         authorList.forEach(System.out::println);
     }
+
+    @Test
+    public void countTest() {
+        System.out.println("Repository count: " + repository.count());
+    }
 }
