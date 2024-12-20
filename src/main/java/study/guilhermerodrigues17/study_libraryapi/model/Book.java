@@ -3,6 +3,7 @@ package study.guilhermerodrigues17.study_libraryapi.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -29,7 +30,7 @@ public class Book {
     private BookGenres genre;
 
     @Column(precision = 18, scale = 2)
-    private Double price;
+    private BigDecimal price;
 
     @ManyToOne
     @JoinColumn(name = "id_author")
