@@ -53,4 +53,17 @@ public class AuthorRepositoryTest {
     public void countTest() {
         System.out.println("Repository count: " + repository.count());
     }
+
+    @Test
+    public void deleteByIdTest() {
+        UUID id = UUID.fromString("aa0d1ec5-389f-48b9-9d28-de1f82219db7");
+        repository.deleteById(id);
+    }
+
+    @Test
+    public void deleteByObj() {
+        UUID id = UUID.fromString("2cceb5fb-61b3-4585-89ae-1a228ad60890");
+        Author obj = repository.findById(id).get();
+        repository.delete(obj);
+    }
 }
