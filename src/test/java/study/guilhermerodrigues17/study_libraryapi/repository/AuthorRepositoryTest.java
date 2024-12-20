@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import study.guilhermerodrigues17.study_libraryapi.model.Author;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -40,5 +41,11 @@ public class AuthorRepositoryTest {
 
             repository.save(authorFound);
         }
+    }
+
+    @Test
+    public void findAllListTest() {
+        List<Author> authorList = repository.findAll();
+        authorList.forEach(System.out::println);
     }
 }
