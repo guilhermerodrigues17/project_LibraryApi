@@ -34,4 +34,24 @@ class BookRepositoryTest {
 
         repository.save(book);
     }
+
+    @Test
+    public void saveWithCascadeTest() {
+        Book book = new Book();
+        book.setIsbn("111-11-11111-11-1");
+        book.setPrice(BigDecimal.valueOf(100));
+        book.setGenre(BookGenres.ROMANCE);
+        book.setTitle("Bridgerton");
+        book.setPublicationDate(LocalDate.of(1980, 2, 25));
+
+        Author author = new Author();
+        author.setName("Maria");
+        author.setBirthDate(LocalDate.of(1995, 6, 21));
+        author.setNationality("Canadian");
+
+        book.setAuthor(author);
+
+        repository.save(book);
+    }
+
 }
