@@ -97,4 +97,14 @@ class BookRepositoryTest {
 
         repository.deleteById(id);
     }
+
+    @Test
+    void deleteWithCascade() {
+
+        //Necessário alterar o cascade type na classe Book; Tomar cuidado com a deleção em cascata
+        UUID id = UUID.fromString("c2580f5c-bff9-42d0-9186-e28d0789145f");
+        var bookToDelete = repository.findById(id).orElse(null);
+
+        repository.deleteById(id);
+    }
 }
