@@ -89,4 +89,12 @@ class BookRepositoryTest {
 
         repository.save(bookToUpdate);
     }
+
+    @Test
+    void deleteById() {
+        UUID id = UUID.fromString("35452446-926d-4f3d-8768-b09ea119a210");
+        var bookToDelete = repository.findById(id).orElse(null);
+
+        repository.deleteById(id);
+    }
 }
