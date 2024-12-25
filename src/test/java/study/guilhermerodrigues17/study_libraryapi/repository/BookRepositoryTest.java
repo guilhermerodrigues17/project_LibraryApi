@@ -37,6 +37,8 @@ class BookRepositoryTest {
 
     @Test
     public void saveWithCascadeTest() {
+
+        //Cascade ALL pode gerar problema na database; Não aconselhado em prod
         Book book = new Book();
         book.setIsbn("111-11-11111-11-1");
         book.setPrice(BigDecimal.valueOf(100));
@@ -48,6 +50,29 @@ class BookRepositoryTest {
         author.setName("Maria");
         author.setBirthDate(LocalDate.of(1995, 6, 21));
         author.setNationality("Canadian");
+
+        book.setAuthor(author);
+
+        repository.save(book);
+    }
+
+    @Test
+    public void saveAuthorAndBookTest() {
+
+        //Opção mais utilizada em prod
+        Book book = new Book();
+        book.setIsbn("111-11-11111-11-1");
+        book.setPrice(BigDecimal.valueOf(100));
+        book.setGenre(BookGenres.BIOGRAFIA);
+        book.setTitle("Lula, volume 1: Biografia");
+        book.setPublicationDate(LocalDate.of(2003, 1, 1));
+
+        Author author = new Author();
+        author.setName("Luiz Inácio Lula da Silva");
+        author.setBirthDate(LocalDate.of(1945, 10, 27));
+        author.setNationality("Brazilian");
+
+        authorRepository.save(author);
 
         book.setAuthor(author);
 
