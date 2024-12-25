@@ -79,4 +79,14 @@ class BookRepositoryTest {
         repository.save(book);
     }
 
+    @Test
+    void updateBookAuthorTest() {
+        UUID id = UUID.fromString("35452446-926d-4f3d-8768-b09ea119a210");
+        var bookToUpdate = repository.findById(id).orElse(null);
+
+        var newAuthor = authorRepository.findById(UUID.fromString("4e3f9cf9-a6e9-45d2-ae89-ad9ad3d7266a")).orElse(null);
+        bookToUpdate.setAuthor(newAuthor);
+
+        repository.save(bookToUpdate);
+    }
 }
