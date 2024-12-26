@@ -20,6 +20,9 @@ public class AuthorRepositoryTest {
     @Autowired
     AuthorRepository repository;
 
+    @Autowired
+    BookRepository bookRepository;
+
     @Test
     public void saveAuthorTest() {
         Author author = new Author();
@@ -99,5 +102,17 @@ public class AuthorRepositoryTest {
         author.getBooks().add(book2);
 
         repository.save(author);
+    }
+
+    @Test
+    void booksAuthorTest() {
+        UUID id = UUID.fromString("1b2c86f5-fccc-434b-8e9f-9610cd510355");
+        Author author = repository.findById(id).get();
+
+        //Query books from author
+        List<Book> booksList = bookRepository.findByAuthor(author);
+        author.setBooks(booksList);
+
+        author.getBooks().forEach(System.out::println);
     }
 }
