@@ -3,6 +3,7 @@ package study.guilhermerodrigues17.study_libraryapi.repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 import study.guilhermerodrigues17.study_libraryapi.model.Author;
 import study.guilhermerodrigues17.study_libraryapi.model.Book;
 import study.guilhermerodrigues17.study_libraryapi.model.BookGenres;
@@ -106,5 +107,15 @@ class BookRepositoryTest {
         var bookToDelete = repository.findById(id).orElse(null);
 
         repository.deleteById(id);
+    }
+
+    @Test
+    @Transactional
+    void findByIdTest() {
+        UUID id = UUID.fromString("b6916b27-bcab-4d02-82c7-c90de4e6d6ab");
+        Book book = repository.findById(id).orElse(null);
+
+        System.out.println("Book: " + book.getTitle());
+        System.out.println("Author: " + book.getAuthor().getName());
     }
 }
