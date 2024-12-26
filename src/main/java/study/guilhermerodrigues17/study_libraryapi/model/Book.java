@@ -2,6 +2,7 @@ package study.guilhermerodrigues17.study_libraryapi.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -10,6 +11,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "book", schema = "public")
 @Data
+@ToString(exclude = "author")
 public class Book {
 
     @Id
