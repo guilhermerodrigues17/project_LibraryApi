@@ -2,8 +2,6 @@ package study.guilhermerodrigues17.study_libraryapi.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
