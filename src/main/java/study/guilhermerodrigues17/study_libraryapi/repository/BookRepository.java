@@ -2,8 +2,10 @@ package study.guilhermerodrigues17.study_libraryapi.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import study.guilhermerodrigues17.study_libraryapi.model.Author;
 import study.guilhermerodrigues17.study_libraryapi.model.Book;
+import study.guilhermerodrigues17.study_libraryapi.model.BookGenres;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -47,4 +49,12 @@ public interface BookRepository extends JpaRepository<Book, UUID> {
             order by b.genre
             """)
     List<String> genresByBrazilianAuthorsList();
+
+    //Named parameters
+    @Query("select b from Book b where b.genre = :genre order by :orderParam")
+    List<Book> findByGenre(@Param("genre") BookGenres genre, @Param("orderParam") String orderParam);
+
+    //Positional parameters
+    @Query("select b from Book b where b.genre = ?1 order by ?2")
+    List<Book> findByGenrePositionalParams(BookGenres genre, String orderParam);
 }
