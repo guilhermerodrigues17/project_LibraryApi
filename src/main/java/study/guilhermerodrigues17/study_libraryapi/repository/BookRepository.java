@@ -1,6 +1,7 @@
 package study.guilhermerodrigues17.study_libraryapi.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import study.guilhermerodrigues17.study_libraryapi.model.Author;
 import study.guilhermerodrigues17.study_libraryapi.model.Book;
 
@@ -28,4 +29,22 @@ public interface BookRepository extends JpaRepository<Book, UUID> {
     List<Book> findByIsbnOrTitle(String isbn, String title);
 
     List<Book> findByPublicationDateBetween(LocalDate start, LocalDate end);
+
+    @Query("select b from Book b order by b.title, b.price")
+    List<Book> allBooksOrdered();
+
+    @Query("select a from Book b join b.author a")
+    List<Author> allBooksAuthors();
+
+    @Query("select distinct b.title from Book b")
+    List<String> distinctBookNamesList();
+
+    @Query("""
+            select b.genre
+            from Book b
+            join b.author a
+            where a.nationality = 'Brazilian'
+            order by b.genre
+            """)
+    List<String> genresByBrazilianAuthorsList();
 }
