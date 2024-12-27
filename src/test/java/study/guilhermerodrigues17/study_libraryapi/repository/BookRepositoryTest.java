@@ -10,6 +10,8 @@ import study.guilhermerodrigues17.study_libraryapi.model.BookGenres;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @SpringBootTest
@@ -117,5 +119,39 @@ class BookRepositoryTest {
 
         System.out.println("Book: " + book.getTitle());
         System.out.println("Author: " + book.getAuthor().getName());
+    }
+
+    @Test
+    void findByTitleTest() {
+        List<Book> books = repository.findByTitle("The Mystery");
+
+        books.forEach(System.out::println);
+    }
+
+    @Test
+    void findByIsbnTest() {
+        List<Book> books = repository.findByIsbn("111-11-11111-11-1");
+
+        books.forEach(System.out::println);
+    }
+
+    @Test
+    void findByIsbnAndPriceTest() {
+        String isbn = "111-11-11111-11-1";
+        BigDecimal price = BigDecimal.valueOf(100.00);
+
+        Optional<Book> bookOptional = repository.findByIsbnAndPrice(isbn, price);
+        Book book = bookOptional.orElse(null);
+
+        System.out.println(book);
+    }
+
+    @Test
+    void findByIsbnOrTitleTest() {
+        String isbn = "111-11-11111-11-1";
+        String title = "The Mystery";
+        List<Book> books = repository.findByIsbnOrTitle(isbn, title);
+
+        books.forEach(System.out::println);
     }
 }
