@@ -163,4 +163,33 @@ class BookRepositoryTest {
 
         books.forEach(System.out::println);
     }
+
+    @Test
+    void allBooksOrderedTest() {
+        List<Book> books = repository.allBooksOrdered();
+
+        books.forEach(System.out::println);
+    }
+
+    @Test
+    void allBooksAuthorsTest() {
+        List<Author> books = repository.allBooksAuthors();
+
+        books.forEach(System.out::println);
+    }
+
+    @Test
+    void distinctBookNamesListTest() {
+        List<String> books = repository.distinctBookNamesList();
+
+        books.forEach(System.out::println);
+    }
+
+    @Test
+    void genresByBrazilianAuthorsListTest() {
+        List<String> genres = repository.genresByBrazilianAuthorsList();
+
+        genres.forEach(System.out::println);
+    }
+
 }
