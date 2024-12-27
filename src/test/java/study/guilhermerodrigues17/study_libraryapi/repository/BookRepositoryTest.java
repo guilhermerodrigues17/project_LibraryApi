@@ -192,4 +192,17 @@ class BookRepositoryTest {
         genres.forEach(System.out::println);
     }
 
+    @Test
+    void findByGenreTest() {
+        List<Book> genres = repository.findByGenre(BookGenres.MISTERIO, "publicationDate");
+
+        genres.forEach(System.out::println);
+    }
+
+    @Test
+    void findByGenrePositionalTest() {
+        List<Book> genres = repository.findByGenre(BookGenres.MISTERIO, "publicationDate");
+
+        genres.forEach(System.out::println);
+    }
 }
