@@ -123,7 +123,7 @@ class BookRepositoryTest {
 
     @Test
     void findByTitleTest() {
-        List<Book> books = repository.findByTitle("The Mystery");
+        List<Book> books = repository.findByTitleOrderByTitle("The Mystery");
 
         books.forEach(System.out::println);
     }
@@ -151,6 +151,15 @@ class BookRepositoryTest {
         String isbn = "111-11-11111-11-1";
         String title = "The Mystery";
         List<Book> books = repository.findByIsbnOrTitle(isbn, title);
+
+        books.forEach(System.out::println);
+    }
+
+    @Test
+    void findByPublicationDateBetween() {
+        LocalDate start = LocalDate.of(1999, 1, 1);
+        LocalDate end = LocalDate.of(2000, 12, 31);
+        List<Book> books = repository.findByPublicationDateBetween(start, end);
 
         books.forEach(System.out::println);
     }
