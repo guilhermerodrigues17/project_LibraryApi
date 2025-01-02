@@ -14,4 +14,10 @@ class TransactionsTest {
     void simpleTransactionTest() {
         transactionService.executeTransaction();
     }
+
+    @Test
+    void updateWithoutSaveTest() {
+        transactionService.updateWithoutSave();
+    }
+
 }
