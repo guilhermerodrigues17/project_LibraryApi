@@ -59,4 +59,29 @@ public class TransactionService {
         // e no commit será realizado um update automaticamente no banco,nao sendo necessário o save();
         book.setPublicationDate(LocalDate.of(2003, 1, 21));
     }
+
+    /*
+    Exemplo de caso de uso de uma transação
+
+    ## book(title, ..., name_archive) -> id.png
+    @Transactional
+    public void saveBookWithPhoto() {
+
+        ## use case comum no mercado
+
+        //save book
+        repository.save(book) -> Passa de Transient para Managed
+
+        //find book id = book.getId()
+        var id = book.getId();
+
+        //save photo -> bucket in cloud
+        bucketService.save(book.getPhoto(), id + ".png");
+
+        //update name_archive from book was saved
+        book.setPhotoArchiveName(id + ".png");
+
+        //Commit salva automaticamente as alterações feitas na entidade Managed!!
+    }
+    */
 }
