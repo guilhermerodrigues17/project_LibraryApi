@@ -1,8 +1,10 @@
 package study.guilhermerodrigues17.study_libraryapi.service;
 
 import org.springframework.stereotype.Service;
+import study.guilhermerodrigues17.study_libraryapi.exceptions.NotAllowedOperationException;
 import study.guilhermerodrigues17.study_libraryapi.model.Author;
 import study.guilhermerodrigues17.study_libraryapi.repository.AuthorRepository;
+import study.guilhermerodrigues17.study_libraryapi.repository.BookRepository;
 import study.guilhermerodrigues17.study_libraryapi.validator.AuthorValidator;
 
 import java.util.List;
@@ -14,10 +16,12 @@ public class AuthorService {
 
     private final AuthorRepository repository;
     private final AuthorValidator validator;
+    private final BookRepository bookRepository;
 
-    public AuthorService(AuthorRepository repository, AuthorValidator validator) {
+    public AuthorService(AuthorRepository repository, AuthorValidator validator, BookRepository bookRepository) {
         this.repository = repository;
         this.validator = validator;
+        this.bookRepository = bookRepository;
     }
 
     public void save(Author author) {
@@ -39,6 +43,9 @@ public class AuthorService {
     }
 
     public void deleteAuthor(Author author) {
+        if (authorHaveBook(author)) {
+            throw new NotAllowedOperationException("This author have registered books!");
+        }
         repository.delete(author);
     }
 
@@ -58,4 +65,7 @@ public class AuthorService {
         return repository.findAll();
     }
 
+    private boolean authorHaveBook(Author author) {
+        return bookRepository.existsByAuthor(author);
+    }
 }
