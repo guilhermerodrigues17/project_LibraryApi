@@ -17,8 +17,16 @@ public class AuthorService {
         this.repository = repository;
     }
 
-    public Author save(Author author) {
-        return repository.save(author);
+    public void save(Author author) {
+        repository.save(author);
+    }
+
+    public void updateById(Author author) {
+        if (author.getId() == null) {
+            throw new IllegalArgumentException("The author must exist in the database!");
+        }
+
+        repository.save(author);
     }
 
     public Optional<Author> findById(UUID id) {
@@ -44,4 +52,5 @@ public class AuthorService {
 
         return repository.findAll();
     }
+
 }
