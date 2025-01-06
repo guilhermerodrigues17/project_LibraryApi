@@ -1,6 +1,5 @@
 package study.guilhermerodrigues17.study_libraryapi.controller;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -50,5 +49,17 @@ public class AuthorController {
             return ResponseEntity.ok(dto);
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteAuthor(@PathVariable String id) {
+        UUID uuid = UUID.fromString(id);
+        Optional<Author> optionalAuthor = service.findById(uuid);
+        if (optionalAuthor.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        service.deleteAuthor(optionalAuthor.get());
+        return ResponseEntity.noContent().build();
     }
 }
