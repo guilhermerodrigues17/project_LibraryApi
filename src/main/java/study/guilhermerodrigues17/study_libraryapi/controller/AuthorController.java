@@ -4,6 +4,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import study.guilhermerodrigues17.study_libraryapi.controller.dto.AuthorDTO;
+import study.guilhermerodrigues17.study_libraryapi.controller.dto.ExceptionResponse;
+import study.guilhermerodrigues17.study_libraryapi.exceptions.DuplicatedRegisterException;
 import study.guilhermerodrigues17.study_libraryapi.model.Author;
 import study.guilhermerodrigues17.study_libraryapi.service.AuthorService;
 
@@ -24,15 +26,20 @@ public class AuthorController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> save(@RequestBody AuthorDTO author) {
-        Author authorEntity = author.mapToAuthor();
-        service.save(authorEntity);
+    public ResponseEntity<Object> save(@RequestBody AuthorDTO author) {
+        try {
+            Author authorEntity = author.mapToAuthor();
+            service.save(authorEntity);
 
-        //http://localhost:8080/authors/uuid
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(authorEntity.getId()).toUri();
+            //http://localhost:8080/authors/uuid
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                    .buildAndExpand(authorEntity.getId()).toUri();
 
-        return ResponseEntity.created(location).build();
+            return ResponseEntity.created(location).build();
+        } catch (DuplicatedRegisterException e) {
+            ExceptionResponse errDto = ExceptionResponse.conflictResponse(e.getMessage());
+            return ResponseEntity.status(errDto.status()).body(errDto);
+        }
     }
 
     @GetMapping("{id}")
@@ -72,21 +79,26 @@ public class AuthorController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Void> updateById(@PathVariable String id, @RequestBody AuthorDTO authorDto) {
-        UUID uuid = UUID.fromString(id);
-        Optional<Author> optionalAuthor = service.findById(uuid);
-        if (optionalAuthor.isEmpty()) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Object> updateById(@PathVariable String id, @RequestBody AuthorDTO authorDto) {
+        try {
+            UUID uuid = UUID.fromString(id);
+            Optional<Author> optionalAuthor = service.findById(uuid);
+            if (optionalAuthor.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            Author author = optionalAuthor.get();
+            author.setName(authorDto.name());
+            author.setBirthDate(authorDto.birthDate());
+            author.setNationality(authorDto.nationality());
+
+            service.updateById(author);
+
+            return ResponseEntity.noContent().build();
+        } catch (DuplicatedRegisterException e) {
+            ExceptionResponse errDto = ExceptionResponse.conflictResponse(e.getMessage());
+            return ResponseEntity.status(errDto.status()).body(errDto);
         }
-
-        Author author = optionalAuthor.get();
-        author.setName(authorDto.name());
-        author.setBirthDate(authorDto.birthDate());
-        author.setNationality(authorDto.nationality());
-
-        service.updateById(author);
-
-        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("{id}")
