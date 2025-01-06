@@ -8,8 +8,10 @@ import study.guilhermerodrigues17.study_libraryapi.model.Author;
 import study.guilhermerodrigues17.study_libraryapi.service.AuthorService;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("authors") //http://localhost:8080/authors
@@ -49,6 +51,24 @@ public class AuthorController {
             return ResponseEntity.ok(dto);
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<AuthorDTO>> searchAuthors(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "nationality", required = false) String nationality
+    ) {
+        List<Author> resultList = service.searchAuthor(name, nationality);
+        List<AuthorDTO> dtoList = resultList.stream().map(
+                author -> new AuthorDTO(
+                        author.getId(),
+                        author.getName(),
+                        author.getBirthDate(),
+                        author.getNationality()
+                )
+        ).toList();
+
+        return ResponseEntity.ok(dtoList);
     }
 
     @DeleteMapping("{id}")
