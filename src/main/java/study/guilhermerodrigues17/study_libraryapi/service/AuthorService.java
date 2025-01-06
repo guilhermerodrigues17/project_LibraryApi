@@ -1,5 +1,6 @@
 package study.guilhermerodrigues17.study_libraryapi.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import study.guilhermerodrigues17.study_libraryapi.exceptions.NotAllowedOperationException;
 import study.guilhermerodrigues17.study_libraryapi.model.Author;
@@ -12,17 +13,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class AuthorService {
 
     private final AuthorRepository repository;
     private final AuthorValidator validator;
     private final BookRepository bookRepository;
-
-    public AuthorService(AuthorRepository repository, AuthorValidator validator, BookRepository bookRepository) {
-        this.repository = repository;
-        this.validator = validator;
-        this.bookRepository = bookRepository;
-    }
 
     public void save(Author author) {
         validator.validate(author);
