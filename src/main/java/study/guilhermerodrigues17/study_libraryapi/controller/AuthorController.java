@@ -6,6 +6,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import study.guilhermerodrigues17.study_libraryapi.controller.dto.AuthorDTO;
 import study.guilhermerodrigues17.study_libraryapi.controller.dto.ExceptionResponse;
 import study.guilhermerodrigues17.study_libraryapi.exceptions.DuplicatedRegisterException;
+import study.guilhermerodrigues17.study_libraryapi.exceptions.NotAllowedOperationException;
 import study.guilhermerodrigues17.study_libraryapi.model.Author;
 import study.guilhermerodrigues17.study_libraryapi.service.AuthorService;
 
@@ -102,14 +103,19 @@ public class AuthorController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteAuthor(@PathVariable String id) {
-        UUID uuid = UUID.fromString(id);
-        Optional<Author> optionalAuthor = service.findById(uuid);
-        if (optionalAuthor.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Object> deleteAuthor(@PathVariable String id) {
+        try {
+            UUID uuid = UUID.fromString(id);
+            Optional<Author> optionalAuthor = service.findById(uuid);
+            if (optionalAuthor.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
 
-        service.deleteAuthor(optionalAuthor.get());
-        return ResponseEntity.noContent().build();
+            service.deleteAuthor(optionalAuthor.get());
+            return ResponseEntity.noContent().build();
+        } catch (NotAllowedOperationException e) {
+            ExceptionResponse errDto = ExceptionResponse.defaultResponse(e.getMessage());
+            return ResponseEntity.status(errDto.status()).body(errDto);
+        }
     }
 }
