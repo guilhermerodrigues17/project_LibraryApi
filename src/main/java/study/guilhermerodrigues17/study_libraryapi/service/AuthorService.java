@@ -1,6 +1,8 @@
 package study.guilhermerodrigues17.study_libraryapi.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import study.guilhermerodrigues17.study_libraryapi.exceptions.NotAllowedOperationException;
 import study.guilhermerodrigues17.study_libraryapi.model.Author;
@@ -45,20 +47,18 @@ public class AuthorService {
         repository.delete(author);
     }
 
-    public List<Author> searchAuthor(String name, String nationality) {
-        if (name != null && nationality != null) {
-            return repository.findByNameAndNationality(name, nationality);
-        }
+    public List<Author> searchAuthorByExample(String name, String nationality) {
+        var author = new Author();
+        author.setName(name);
+        author.setNationality(nationality);
 
-        if (name != null) {
-            return repository.findByName(name);
-        }
+        ExampleMatcher matcher = ExampleMatcher.matching()
+                .withIgnoreNullValues()
+                .withIgnoreCase()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+        Example<Author> authorExample = Example.of(author, matcher);
 
-        if (nationality != null) {
-            return repository.findByNationality(nationality);
-        }
-
-        return repository.findAll();
+        return repository.findAll(authorExample);
     }
 
     private boolean authorHaveBook(Author author) {
