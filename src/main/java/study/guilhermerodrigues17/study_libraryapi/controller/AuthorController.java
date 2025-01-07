@@ -1,5 +1,6 @@
 package study.guilhermerodrigues17.study_libraryapi.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("authors") //http://localhost:8080/authors
@@ -25,7 +25,7 @@ public class AuthorController {
     private final AuthorService service;
 
     @PostMapping
-    public ResponseEntity<Object> save(@RequestBody AuthorDTO author) {
+    public ResponseEntity<Object> save(@RequestBody @Valid AuthorDTO author) {
         try {
             Author authorEntity = author.mapToAuthor();
             service.save(authorEntity);
@@ -78,7 +78,7 @@ public class AuthorController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Object> updateById(@PathVariable String id, @RequestBody AuthorDTO authorDto) {
+    public ResponseEntity<Object> updateById(@PathVariable String id, @RequestBody @Valid AuthorDTO authorDto) {
         try {
             UUID uuid = UUID.fromString(id);
             Optional<Author> optionalAuthor = service.findById(uuid);
