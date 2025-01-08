@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import study.guilhermerodrigues17.study_libraryapi.controller.dto.AuthorDTO;
 import study.guilhermerodrigues17.study_libraryapi.controller.dto.ExceptionResponse;
 import study.guilhermerodrigues17.study_libraryapi.controller.mappers.AuthorMapper;
@@ -21,7 +20,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("authors") //http://localhost:8080/authors
 @RequiredArgsConstructor
-public class AuthorController {
+public class AuthorController implements GenericController{
 
     private final AuthorService service;
     private final AuthorMapper mapper;
@@ -33,9 +32,7 @@ public class AuthorController {
             service.save(authorEntity);
 
             //http://localhost:8080/authors/uuid
-            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                    .buildAndExpand(authorEntity.getId()).toUri();
-
+            URI location = generateHeaderLocation(authorEntity.getId());
             return ResponseEntity.created(location).build();
         } catch (DuplicatedRegisterException e) {
             ExceptionResponse errDto = ExceptionResponse.conflictResponse(e.getMessage());
