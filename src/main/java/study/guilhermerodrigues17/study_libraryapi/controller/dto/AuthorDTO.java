@@ -22,12 +22,4 @@ public record AuthorDTO(
         String nationality
 ) {
 
-    public Author mapToAuthor() {
-        Author author = new Author();
-        author.setName(this.name);
-        author.setBirthDate(this.birthDate);
-        author.setNationality(this.nationality);
-
-        return author;
-    }
 }
