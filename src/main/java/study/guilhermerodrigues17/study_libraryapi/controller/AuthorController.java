@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import study.guilhermerodrigues17.study_libraryapi.controller.dto.AuthorDTO;
 import study.guilhermerodrigues17.study_libraryapi.controller.dto.ExceptionResponse;
+import study.guilhermerodrigues17.study_libraryapi.controller.mappers.AuthorMapper;
 import study.guilhermerodrigues17.study_libraryapi.exceptions.DuplicatedRegisterException;
 import study.guilhermerodrigues17.study_libraryapi.exceptions.NotAllowedOperationException;
 import study.guilhermerodrigues17.study_libraryapi.model.Author;
@@ -23,11 +24,12 @@ import java.util.UUID;
 public class AuthorController {
 
     private final AuthorService service;
+    private final AuthorMapper mapper;
 
     @PostMapping
-    public ResponseEntity<Object> save(@RequestBody @Valid AuthorDTO author) {
+    public ResponseEntity<Object> save(@RequestBody @Valid AuthorDTO dto) {
         try {
-            Author authorEntity = author.mapToAuthor();
+            Author authorEntity = mapper.toEntity(dto);
             service.save(authorEntity);
 
             //http://localhost:8080/authors/uuid
@@ -44,19 +46,10 @@ public class AuthorController {
     @GetMapping("{id}")
     public ResponseEntity<AuthorDTO> findById(@PathVariable String id) {
         UUID uuid = UUID.fromString(id);
-        Optional<Author> optionalAuthor = service.findById(uuid);
-        if (optionalAuthor.isPresent()) {
-            Author author = optionalAuthor.get();
-            AuthorDTO dto = new AuthorDTO(
-                    author.getId(),
-                    author.getName(),
-                    author.getBirthDate(),
-                    author.getNationality()
-            );
-
+        return service.findById(uuid).map(author -> {
+            AuthorDTO dto = mapper.toDTO(author);
             return ResponseEntity.ok(dto);
-        }
-        return ResponseEntity.notFound().build();
+        }).orElseGet( () -> ResponseEntity.notFound().build() );
     }
 
     @GetMapping
@@ -65,15 +58,10 @@ public class AuthorController {
             @RequestParam(value = "nationality", required = false) String nationality
     ) {
         List<Author> resultList = service.searchAuthorByExample(name, nationality);
-        List<AuthorDTO> dtoList = resultList.stream().map(
-                author -> new AuthorDTO(
-                        author.getId(),
-                        author.getName(),
-                        author.getBirthDate(),
-                        author.getNationality()
-                )
-        ).toList();
-
+        List<AuthorDTO> dtoList = resultList
+                .stream()
+                .map(mapper::toDTO)
+                .toList();
         return ResponseEntity.ok(dtoList);
     }
 
