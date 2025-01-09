@@ -23,7 +23,7 @@ public class BookController implements GenericController {
     private final BookMapper mapper;
 
     @PostMapping
-    public ResponseEntity<Object> save(@RequestBody @Valid BookRequestDTO dto) {
+    public ResponseEntity<Void> save(@RequestBody @Valid BookRequestDTO dto) {
         Book bookEntity = mapper.toEntity(dto);
         service.save(bookEntity);
         URI uri = generateHeaderLocation(bookEntity.getId());
