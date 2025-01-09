@@ -36,4 +36,12 @@ public class BookController implements GenericController {
             return ResponseEntity.ok(dto);
         }).orElseGet( () -> ResponseEntity.notFound().build() );
     }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Object> deleteById(@PathVariable String id) {
+        return service.findById(UUID.fromString(id)).map(book -> {
+            service.deleteById(book);
+            return ResponseEntity.noContent().build();
+        }).orElseGet( () -> ResponseEntity.notFound().build() );
+    }
 }
