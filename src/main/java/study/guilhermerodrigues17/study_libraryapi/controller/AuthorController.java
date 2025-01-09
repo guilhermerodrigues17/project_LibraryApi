@@ -5,10 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import study.guilhermerodrigues17.study_libraryapi.controller.dto.AuthorDTO;
-import study.guilhermerodrigues17.study_libraryapi.controller.dto.ExceptionResponse;
 import study.guilhermerodrigues17.study_libraryapi.controller.mappers.AuthorMapper;
-import study.guilhermerodrigues17.study_libraryapi.exceptions.DuplicatedRegisterException;
-import study.guilhermerodrigues17.study_libraryapi.exceptions.NotAllowedOperationException;
 import study.guilhermerodrigues17.study_libraryapi.model.Author;
 import study.guilhermerodrigues17.study_libraryapi.service.AuthorService;
 
@@ -20,24 +17,19 @@ import java.util.UUID;
 @RestController
 @RequestMapping("authors") //http://localhost:8080/authors
 @RequiredArgsConstructor
-public class AuthorController implements GenericController{
+public class AuthorController implements GenericController {
 
     private final AuthorService service;
     private final AuthorMapper mapper;
 
     @PostMapping
     public ResponseEntity<Object> save(@RequestBody @Valid AuthorDTO dto) {
-        try {
-            Author authorEntity = mapper.toEntity(dto);
-            service.save(authorEntity);
+        Author authorEntity = mapper.toEntity(dto);
+        service.save(authorEntity);
 
-            //http://localhost:8080/authors/uuid
-            URI location = generateHeaderLocation(authorEntity.getId());
-            return ResponseEntity.created(location).build();
-        } catch (DuplicatedRegisterException e) {
-            ExceptionResponse errDto = ExceptionResponse.conflictResponse(e.getMessage());
-            return ResponseEntity.status(errDto.status()).body(errDto);
-        }
+        //http://localhost:8080/authors/uuid
+        URI location = generateHeaderLocation(authorEntity.getId());
+        return ResponseEntity.created(location).build();
     }
 
     @GetMapping("{id}")
@@ -46,7 +38,7 @@ public class AuthorController implements GenericController{
         return service.findById(uuid).map(author -> {
             AuthorDTO dto = mapper.toDTO(author);
             return ResponseEntity.ok(dto);
-        }).orElseGet( () -> ResponseEntity.notFound().build() );
+        }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping
@@ -64,41 +56,31 @@ public class AuthorController implements GenericController{
 
     @PutMapping("{id}")
     public ResponseEntity<Object> updateById(@PathVariable String id, @RequestBody @Valid AuthorDTO authorDto) {
-        try {
-            UUID uuid = UUID.fromString(id);
-            Optional<Author> optionalAuthor = service.findById(uuid);
-            if (optionalAuthor.isEmpty()) {
-                return ResponseEntity.notFound().build();
-            }
-
-            Author author = optionalAuthor.get();
-            author.setName(authorDto.name());
-            author.setBirthDate(authorDto.birthDate());
-            author.setNationality(authorDto.nationality());
-
-            service.updateById(author);
-
-            return ResponseEntity.noContent().build();
-        } catch (DuplicatedRegisterException e) {
-            ExceptionResponse errDto = ExceptionResponse.conflictResponse(e.getMessage());
-            return ResponseEntity.status(errDto.status()).body(errDto);
+        UUID uuid = UUID.fromString(id);
+        Optional<Author> optionalAuthor = service.findById(uuid);
+        if (optionalAuthor.isEmpty()) {
+            return ResponseEntity.notFound().build();
         }
+
+        Author author = optionalAuthor.get();
+        author.setName(authorDto.name());
+        author.setBirthDate(authorDto.birthDate());
+        author.setNationality(authorDto.nationality());
+
+        service.updateById(author);
+
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<Object> deleteAuthor(@PathVariable String id) {
-        try {
-            UUID uuid = UUID.fromString(id);
-            Optional<Author> optionalAuthor = service.findById(uuid);
-            if (optionalAuthor.isEmpty()) {
-                return ResponseEntity.notFound().build();
-            }
-
-            service.deleteAuthor(optionalAuthor.get());
-            return ResponseEntity.noContent().build();
-        } catch (NotAllowedOperationException e) {
-            ExceptionResponse errDto = ExceptionResponse.defaultResponse(e.getMessage());
-            return ResponseEntity.status(errDto.status()).body(errDto);
+        UUID uuid = UUID.fromString(id);
+        Optional<Author> optionalAuthor = service.findById(uuid);
+        if (optionalAuthor.isEmpty()) {
+            return ResponseEntity.notFound().build();
         }
+
+        service.deleteAuthor(optionalAuthor.get());
+        return ResponseEntity.noContent().build();
     }
 }
