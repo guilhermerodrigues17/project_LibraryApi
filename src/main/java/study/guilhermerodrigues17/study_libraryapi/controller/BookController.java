@@ -8,9 +8,11 @@ import study.guilhermerodrigues17.study_libraryapi.controller.dto.BookRequestDTO
 import study.guilhermerodrigues17.study_libraryapi.controller.dto.BookResponseDTO;
 import study.guilhermerodrigues17.study_libraryapi.controller.mappers.BookMapper;
 import study.guilhermerodrigues17.study_libraryapi.model.Book;
+import study.guilhermerodrigues17.study_libraryapi.model.BookGenres;
 import study.guilhermerodrigues17.study_libraryapi.service.BookService;
 
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -35,6 +37,25 @@ public class BookController implements GenericController {
             var dto = mapper.toDTO(book);
             return ResponseEntity.ok(dto);
         }).orElseGet( () -> ResponseEntity.notFound().build() );
+    }
+
+    @GetMapping
+    public ResponseEntity<List<BookResponseDTO>> searchBooksBySpecs(
+            @RequestParam(value = "isbn", required = false)
+            String isbn,
+            @RequestParam(value = "title", required = false)
+            String title,
+            @RequestParam(value = "author-name", required = false)
+            String authorName,
+            @RequestParam(value = "genre", required = false)
+            BookGenres genre,
+            @RequestParam(value = "publication-year", required = false)
+            Integer publicationYear
+    ) {
+        List<Book> booksFound = service.searchBooksBySpecs(isbn, title, authorName, genre, publicationYear);
+        List<BookResponseDTO> dtoList = booksFound.stream().map(mapper::toDTO).toList();
+
+        return ResponseEntity.ok(dtoList);
     }
 
     @DeleteMapping("{id}")
