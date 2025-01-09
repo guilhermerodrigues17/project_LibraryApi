@@ -21,4 +21,8 @@ public class BookService {
     public Optional<Book> findById(UUID id) {
         return repository.findById(id);
     }
+
+    public void deleteById(Book book) {
+        repository.delete(book);
+    }
 }
