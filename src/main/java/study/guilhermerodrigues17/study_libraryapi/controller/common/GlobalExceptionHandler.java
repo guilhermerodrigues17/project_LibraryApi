@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import study.guilhermerodrigues17.study_libraryapi.controller.dto.ExceptionFields;
 import study.guilhermerodrigues17.study_libraryapi.controller.dto.ExceptionResponse;
 import study.guilhermerodrigues17.study_libraryapi.exceptions.DuplicatedRegisterException;
+import study.guilhermerodrigues17.study_libraryapi.exceptions.InvalidFieldException;
 import study.guilhermerodrigues17.study_libraryapi.exceptions.NotAllowedOperationException;
 
 import java.util.List;
@@ -52,6 +53,16 @@ public class GlobalExceptionHandler {
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "An unexpected error occurred!",
                 List.of()
+        );
+    }
+
+    @ExceptionHandler(InvalidFieldException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ExceptionResponse handleInvalidFieldException(InvalidFieldException e) {
+        return new ExceptionResponse(
+                HttpStatus.UNPROCESSABLE_ENTITY.value(),
+                "Validation Error",
+                List.of(new ExceptionFields(e.getField(), e.getMessage()))
         );
     }
 }
