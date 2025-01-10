@@ -46,4 +46,12 @@ public class BookService {
 
         return repository.findAll(specs);
     }
+
+    public void updateById(Book book) {
+        if (book.getId() == null) {
+            throw new IllegalArgumentException("The book must exist in the database!");
+        }
+
+        repository.save(book);
+    }
 }
