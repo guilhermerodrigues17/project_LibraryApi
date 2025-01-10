@@ -25,7 +25,7 @@ public interface BookRepository extends JpaRepository<Book, UUID>, JpaSpecificat
     List<Book> findByTitleOrderByTitle(String title);
 
     //select * from book where isbn = ?
-    List<Book> findByIsbn(String isbn);
+    Optional<Book> findByIsbn(String isbn);
 
     //select * from book where isbn = ? and price = ?
     Optional<Book> findByIsbnAndPrice(String isbn, BigDecimal price);

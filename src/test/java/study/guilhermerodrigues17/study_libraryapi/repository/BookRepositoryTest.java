@@ -130,9 +130,9 @@ class BookRepositoryTest {
 
     @Test
     void findByIsbnTest() {
-        List<Book> books = repository.findByIsbn("111-11-11111-11-1");
+        Optional<Book> book = repository.findByIsbn("111-11-11111-11-1");
 
-        books.forEach(System.out::println);
+        book.ifPresent(System.out::println);
     }
 
     @Test
