@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import study.guilhermerodrigues17.study_libraryapi.model.Book;
 import study.guilhermerodrigues17.study_libraryapi.model.BookGenres;
 import study.guilhermerodrigues17.study_libraryapi.repository.BookRepository;
+import study.guilhermerodrigues17.study_libraryapi.validator.BookValidator;
 
 import static study.guilhermerodrigues17.study_libraryapi.repository.specs.BookSpecs.*;
 
@@ -18,8 +19,10 @@ import java.util.UUID;
 public class BookService {
 
     private final BookRepository repository;
+    private final BookValidator validator;
 
     public Book save(Book book) {
+        validator.validate(book);
         return repository.save(book);
     }
 
@@ -52,6 +55,7 @@ public class BookService {
             throw new IllegalArgumentException("The book must exist in the database!");
         }
 
+        validator.validate(book);
         repository.save(book);
     }
 }
