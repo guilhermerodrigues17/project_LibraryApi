@@ -2,6 +2,7 @@ package study.guilhermerodrigues17.study_libraryapi.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import study.guilhermerodrigues17.study_libraryapi.controller.dto.BookRequestDTO;
@@ -40,7 +41,7 @@ public class BookController implements GenericController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BookResponseDTO>> searchBooksBySpecs(
+    public ResponseEntity<Page<BookResponseDTO>> searchBooksBySpecs(
             @RequestParam(value = "isbn", required = false)
             String isbn,
             @RequestParam(value = "title", required = false)
@@ -50,10 +51,14 @@ public class BookController implements GenericController {
             @RequestParam(value = "genre", required = false)
             BookGenres genre,
             @RequestParam(value = "publication-year", required = false)
-            Integer publicationYear
+            Integer publicationYear,
+            @RequestParam(value = "page-number", defaultValue = "0")
+            Integer pageNumber,
+            @RequestParam(value = "page-size", defaultValue = "10")
+            Integer pageSize
     ) {
-        List<Book> booksFound = service.searchBooksBySpecs(isbn, title, authorName, genre, publicationYear);
-        List<BookResponseDTO> dtoList = booksFound.stream().map(mapper::toDTO).toList();
+        Page<Book> booksFound = service.searchBooksBySpecs(isbn, title, authorName, genre, publicationYear, pageNumber, pageSize);
+        Page<BookResponseDTO> dtoList = booksFound.map(mapper::toDTO);
 
         return ResponseEntity.ok(dtoList);
     }
