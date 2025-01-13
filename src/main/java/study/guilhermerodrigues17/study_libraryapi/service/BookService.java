@@ -1,6 +1,9 @@
 package study.guilhermerodrigues17.study_libraryapi.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import study.guilhermerodrigues17.study_libraryapi.model.Book;
@@ -34,8 +37,8 @@ public class BookService {
         repository.delete(book);
     }
 
-    public List<Book> searchBooksBySpecs(String isbn, String title, String authorName,
-                                         BookGenres genre, Integer publicationYear) {
+    public Page<Book> searchBooksBySpecs(String isbn, String title, String authorName,
+                                         BookGenres genre, Integer publicationYear, Integer pageNumber, Integer pageSize) {
         Specification<Book> specs = Specification.where(
                 (root, query, criteriaBuilder) ->
                         criteriaBuilder.conjunction()
@@ -47,7 +50,9 @@ public class BookService {
         if (publicationYear != null) specs = specs.and(publicationYearEqual(publicationYear));
         if (authorName != null) specs = specs.and(authorNameLike(authorName));
 
-        return repository.findAll(specs);
+        Pageable pageRequest = PageRequest.of(pageNumber, pageSize);
+
+        return repository.findAll(specs, pageRequest);
     }
 
     public void updateById(Book book) {
