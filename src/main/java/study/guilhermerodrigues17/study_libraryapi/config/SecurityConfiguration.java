@@ -26,6 +26,7 @@ public class SecurityConfiguration {
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(authorization -> {
                     authorization.requestMatchers("/login").permitAll();
+                    authorization.requestMatchers("/users/**").permitAll();
                     authorization.requestMatchers("/authors/**").hasRole("ADMIN");
                     authorization.requestMatchers("/books/**").hasAnyRole("ADMIN", "USER");
 
