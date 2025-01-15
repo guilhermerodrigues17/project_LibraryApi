@@ -24,7 +24,13 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(configurer -> configurer.loginPage("/login").permitAll())
                 .httpBasic(Customizer.withDefaults())
-                .authorizeHttpRequests(authorization -> authorization.anyRequest().authenticated())
+                .authorizeHttpRequests(authorization -> {
+                    authorization.requestMatchers("/login").permitAll();
+                    authorization.requestMatchers("/authors/**").hasRole("ADMIN");
+                    authorization.requestMatchers("/books/**").hasAnyRole("ADMIN", "USER");
+
+                    authorization.anyRequest().authenticated();
+                })
                 .build();
     }
 
