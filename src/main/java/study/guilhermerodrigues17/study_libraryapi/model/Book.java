@@ -54,6 +54,7 @@ public class Book {
     @Column(name = "last_modified_date")
     private LocalDateTime lastModifiedDate;
 
-    @Column(name = "user_id")
-    private UUID userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }
