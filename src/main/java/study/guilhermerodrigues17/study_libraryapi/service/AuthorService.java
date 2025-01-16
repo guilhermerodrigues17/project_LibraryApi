@@ -8,6 +8,7 @@ import study.guilhermerodrigues17.study_libraryapi.exceptions.NotAllowedOperatio
 import study.guilhermerodrigues17.study_libraryapi.model.Author;
 import study.guilhermerodrigues17.study_libraryapi.repository.AuthorRepository;
 import study.guilhermerodrigues17.study_libraryapi.repository.BookRepository;
+import study.guilhermerodrigues17.study_libraryapi.security.SecurityService;
 import study.guilhermerodrigues17.study_libraryapi.validator.AuthorValidator;
 
 import java.util.List;
@@ -21,9 +22,11 @@ public class AuthorService {
     private final AuthorRepository repository;
     private final AuthorValidator validator;
     private final BookRepository bookRepository;
+    private final SecurityService securityService;
 
     public void save(Author author) {
         validator.validate(author);
+        author.setUser(securityService.getUserLogged());
         repository.save(author);
     }
 
