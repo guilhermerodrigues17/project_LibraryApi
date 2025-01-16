@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import study.guilhermerodrigues17.study_libraryapi.controller.dto.BookRequestDTO;
 import study.guilhermerodrigues17.study_libraryapi.controller.dto.BookResponseDTO;
@@ -13,12 +14,12 @@ import study.guilhermerodrigues17.study_libraryapi.model.BookGenres;
 import study.guilhermerodrigues17.study_libraryapi.service.BookService;
 
 import java.net.URI;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("books")
 @RequiredArgsConstructor
+@PreAuthorize("hasAnyRole('MANAGER', 'OPERATOR')")
 public class BookController implements GenericController {
 
     private final BookService service;
