@@ -3,6 +3,7 @@ package study.guilhermerodrigues17.study_libraryapi.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import study.guilhermerodrigues17.study_libraryapi.controller.dto.AuthorDTO;
 import study.guilhermerodrigues17.study_libraryapi.controller.mappers.AuthorMapper;
@@ -23,6 +24,7 @@ public class AuthorController implements GenericController {
     private final AuthorMapper mapper;
 
     @PostMapping
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<Void> save(@RequestBody @Valid AuthorDTO dto) {
         Author authorEntity = mapper.toEntity(dto);
         service.save(authorEntity);
@@ -33,6 +35,7 @@ public class AuthorController implements GenericController {
     }
 
     @GetMapping("{id}")
+    @PreAuthorize("hasAnyRole('OPERATOR', 'MANAGER')")
     public ResponseEntity<AuthorDTO> findById(@PathVariable String id) {
         UUID uuid = UUID.fromString(id);
         return service.findById(uuid).map(author -> {
@@ -42,6 +45,7 @@ public class AuthorController implements GenericController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('OPERATOR', 'MANAGER')")
     public ResponseEntity<List<AuthorDTO>> searchAuthors(
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "nationality", required = false) String nationality
@@ -55,6 +59,7 @@ public class AuthorController implements GenericController {
     }
 
     @PutMapping("{id}")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<Void> updateById(@PathVariable String id, @RequestBody @Valid AuthorDTO authorDto) {
         UUID uuid = UUID.fromString(id);
         Optional<Author> optionalAuthor = service.findById(uuid);
@@ -73,6 +78,7 @@ public class AuthorController implements GenericController {
     }
 
     @DeleteMapping("{id}")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<Void> deleteAuthor(@PathVariable String id) {
         UUID uuid = UUID.fromString(id);
         Optional<Author> optionalAuthor = service.findById(uuid);
