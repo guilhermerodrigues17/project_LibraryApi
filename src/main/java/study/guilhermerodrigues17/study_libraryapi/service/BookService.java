@@ -9,13 +9,13 @@ import org.springframework.stereotype.Service;
 import study.guilhermerodrigues17.study_libraryapi.model.Book;
 import study.guilhermerodrigues17.study_libraryapi.model.BookGenres;
 import study.guilhermerodrigues17.study_libraryapi.repository.BookRepository;
+import study.guilhermerodrigues17.study_libraryapi.security.SecurityService;
 import study.guilhermerodrigues17.study_libraryapi.validator.BookValidator;
 
-import static study.guilhermerodrigues17.study_libraryapi.repository.specs.BookSpecs.*;
-
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import static study.guilhermerodrigues17.study_libraryapi.repository.specs.BookSpecs.*;
 
 @Service
 @RequiredArgsConstructor
@@ -23,9 +23,11 @@ public class BookService {
 
     private final BookRepository repository;
     private final BookValidator validator;
+    private final SecurityService securityService;
 
     public Book save(Book book) {
         validator.validate(book);
+        book.setUser(securityService.getUserLogged());
         return repository.save(book);
     }
 
