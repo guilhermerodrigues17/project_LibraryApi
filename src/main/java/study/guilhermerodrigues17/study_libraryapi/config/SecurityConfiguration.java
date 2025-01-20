@@ -25,8 +25,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, SocialLoginSuccessHandler successHandler) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-//              .formLogin(configurer -> configurer.loginPage("/login"))
-                .formLogin(Customizer.withDefaults())
+                .formLogin(configurer -> configurer.loginPage("/login"))
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(authorization -> {
                     authorization.requestMatchers("/login").permitAll();
@@ -35,6 +34,7 @@ public class SecurityConfiguration {
                     authorization.anyRequest().authenticated();
                 })
                 .oauth2Login(oauth2 -> {
+                    oauth2.loginPage("/login");
                     oauth2.successHandler(successHandler);
                 })
                 .build();
