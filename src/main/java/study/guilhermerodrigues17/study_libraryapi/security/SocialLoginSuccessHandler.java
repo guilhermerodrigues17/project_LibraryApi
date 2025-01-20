@@ -14,10 +14,13 @@ import study.guilhermerodrigues17.study_libraryapi.model.User;
 import study.guilhermerodrigues17.study_libraryapi.service.UserService;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class SocialLoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
+
+    private final static String DEFAULT_PASSWORD = "defaultpassword";
 
     private final UserService userService;
 
@@ -29,10 +32,28 @@ public class SocialLoginSuccessHandler extends SavedRequestAwareAuthenticationSu
         String email = oAuth2User.getAttribute("email");
 
         User user = userService.findByEmail(email);
+        if (user == null) {
+            user = saveNewUser(email);
+        }
         authentication = new CustomAuthentication(user);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         super.onAuthenticationSuccess(request, response, authentication);
+    }
+
+    private User saveNewUser(String email) {
+        User user = new User();
+        user.setUsername(emailToUsername(email));
+        user.setEmail(email);
+        user.setPassword(DEFAULT_PASSWORD);
+        user.setRoles(List.of("OPERATOR"));
+
+        userService.save(user);
+        return user;
+    }
+
+    private String emailToUsername(String email) {
+        return email.substring(0, email.indexOf("@"));
     }
 }
