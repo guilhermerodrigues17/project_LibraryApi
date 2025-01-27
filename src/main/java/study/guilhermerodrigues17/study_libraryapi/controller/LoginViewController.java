@@ -3,6 +3,7 @@ package study.guilhermerodrigues17.study_libraryapi.controller;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import study.guilhermerodrigues17.study_libraryapi.security.CustomAuthentication;
 
@@ -23,4 +24,9 @@ public class LoginViewController {
         return "Hello, " + authentication.getName();
     }
 
+    @GetMapping("/authorized")
+    @ResponseBody
+    public String getCode(@RequestParam String code) {
+        return "Generated authentication code: " + code;
+    }
 }
