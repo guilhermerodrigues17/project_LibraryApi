@@ -10,8 +10,10 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import study.guilhermerodrigues17.study_libraryapi.security.SocialLoginSuccessHandler;
+import study.guilhermerodrigues17.study_libraryapi.service.JwtCustomAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -19,7 +21,7 @@ import study.guilhermerodrigues17.study_libraryapi.security.SocialLoginSuccessHa
 public class SecurityConfiguration {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, SocialLoginSuccessHandler successHandler) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, SocialLoginSuccessHandler successHandler, JwtCustomAuthenticationFilter jwtCustomAuthenticationFilter) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(configurer -> configurer.loginPage("/login"))
@@ -35,6 +37,7 @@ public class SecurityConfiguration {
                     oauth2.successHandler(successHandler);
                 })
                 .oauth2ResourceServer(oAuth2RS -> oAuth2RS.jwt(Customizer.withDefaults()))
+                .addFilterAfter(jwtCustomAuthenticationFilter, BearerTokenAuthenticationFilter.class)
                 .build();
     }
 
