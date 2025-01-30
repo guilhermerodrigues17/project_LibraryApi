@@ -26,7 +26,6 @@ public class SecurityConfiguration {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(configurer -> configurer.loginPage("/login"))
-                .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(authorization -> {
                     authorization.requestMatchers("/login").permitAll();
                     authorization.requestMatchers("/users/**").permitAll();
