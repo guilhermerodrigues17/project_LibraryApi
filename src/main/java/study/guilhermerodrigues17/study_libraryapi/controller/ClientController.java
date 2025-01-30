@@ -1,5 +1,9 @@
 package study.guilhermerodrigues17.study_libraryapi.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,6 +18,7 @@ import study.guilhermerodrigues17.study_libraryapi.service.ClientService;
 @RestController
 @RequestMapping("clients")
 @RequiredArgsConstructor
+@Tag(name = "Clients")
 public class ClientController {
 
     private final ClientService service;
@@ -22,6 +27,11 @@ public class ClientController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('MANAGER')")
+    @Operation(summary = "Save", description = "Save a new client.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Saved successful."),
+            @ApiResponse(responseCode = "422", description = "Validation error.")
+    })
     public void save(@RequestBody @Valid ClientDTO dto) {
         Client clientEntity = mapper.toEntity(dto);
         service.save(clientEntity);
@@ -29,6 +39,11 @@ public class ClientController {
 
     @GetMapping("{clientId}")
     @PreAuthorize("hasAnyRole('MANAGER', 'OPERATOR')")
+    @Operation(summary = "Find By Client ID", description = "Find client by ID.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Client found."),
+            @ApiResponse(responseCode = "404", description = "Client not found.")
+    })
     public ResponseEntity<ClientDTO> findByClientId(@PathVariable String clientId) {
         Client clientFound = service.findByClientId(clientId);
         ClientDTO dto = mapper.toDTO(clientFound);
