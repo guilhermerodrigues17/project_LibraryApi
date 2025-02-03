@@ -26,7 +26,7 @@ logging:
     org:
       springframework:
         web: debug
-        security: trace
+        security: warn
     study:
       guilhermerodrigues17: trace
 
