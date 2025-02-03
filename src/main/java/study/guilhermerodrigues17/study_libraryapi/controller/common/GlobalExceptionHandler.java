@@ -1,5 +1,6 @@
 package study.guilhermerodrigues17.study_libraryapi.controller.common;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
@@ -15,12 +16,14 @@ import study.guilhermerodrigues17.study_libraryapi.exceptions.NotAllowedOperatio
 
 import java.util.List;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     public ExceptionResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        log.error("Validation error: {}", e.getMessage());
         List<FieldError> fieldErrors = e.getFieldErrors();
         List<ExceptionFields> exceptionFields = fieldErrors.stream().map(
                 fieldError -> new ExceptionFields(
@@ -50,6 +53,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionResponse handleInternalServerException(RuntimeException e) {
+        log.error("An unexpected error occurred!", e);
         return new ExceptionResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "An unexpected error occurred!",

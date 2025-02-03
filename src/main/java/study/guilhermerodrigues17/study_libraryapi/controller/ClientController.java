@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +20,7 @@ import study.guilhermerodrigues17.study_libraryapi.service.ClientService;
 @RequestMapping("clients")
 @RequiredArgsConstructor
 @Tag(name = "Clients")
+@Slf4j
 public class ClientController {
 
     private final ClientService service;
@@ -33,6 +35,7 @@ public class ClientController {
             @ApiResponse(responseCode = "422", description = "Validation error.")
     })
     public void save(@RequestBody @Valid ClientDTO dto) {
+        log.info("Registering a new client {}, with scope {}.", dto.clientId(), dto.scope());
         Client clientEntity = mapper.toEntity(dto);
         service.save(clientEntity);
     }
