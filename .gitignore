@@ -3,6 +3,8 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+app.log
+app.log.2025-02-03.0.gz
 
 ### STS ###
 .apt_generated
