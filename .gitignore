@@ -5,6 +5,7 @@ target/
 !**/src/test/**/target/
 app.log
 app.log.2025-02-03.0.gz
+sqlCommands.txt
 
 ### STS ###
 .apt_generated
